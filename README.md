@@ -1,37 +1,76 @@
-## Welcome to GitHub Pages
+<html>
 
-You can use the [editor on GitHub](https://github.com/ambrose-leung/ambrose-leung.github.io/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+<head>
+    <script type="text/javascript"
+        src="https://cdn.jsdelivr.net/gh/space10-community/conversational-form@1.0.2/dist/conversational-form.min.js"
+        crossorigin></script>
+    <script>
+        window.onload = function () {
+            var testValidation = function (dto, success, error) {
+                console.log("dto....", dto, success, error);
+                if (dto.text.indexOf("world") != -1) return success();
+                return error();
+            };
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+            const dispatcher = new cf.EventDispatcher();
+            dispatcher.addEventListener(
+                cf.ChatListEvents.CHATLIST_UPDATED,
+                function (event) {
+                    // console.log("chat list updated...", event);
+                },
+                false
+            );
 
-### Markdown
+            var conversationalForm = new cf.ConversationalForm({
+                formEl: document.getElementById("form"),
+                context: document.getElementById("cf-context"),
+                eventDispatcher: dispatcher,
+                preventAutoFocus: true,
+                flowStepCallback: function (dto, success, error) {
+                    success();
+                },
+                submitCallback: function () {
+                    // remove Conversational Form
+                    alert("You made it!");
+                    console.log("Form submitted...");
+                }
+            });
+        };
+    </script>
+</head>
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+<body>
+    <link rel="stylesheet" href="formstyle.css">
 
-```markdown
-Syntax highlighted code block
+    <form id="form" class="form">
 
-# Header 1
-## Header 2
-### Header 3
 
-- Bulleted
-- List
+            <input required type='text' cf-questions="What's your name?" name='firstname'  />
+            <cf-robot-message cf-questions="Nice to meet you, {firstname}!" ></cf-robot-message>
+            <input  type='number' cf-questions="How many years have you worked at your position?" name='yearsAtPosition'  />
+            <fieldset cf-questions="What is your role?"><input required type="checkbox" id="id-SoftengSoftwareEngineer" name="role" value="Softeng"><label for="id-SoftengSoftwareEngineer">Software Engineer</label><input required type="checkbox" id="id-testerTesting" name="role" value="tester"><label for="id-testerTesting">Testing</label><input required type="checkbox" id="id-progmanProgramManager" name="role" value="progman"><label for="id-progmanProgramManager">Program Manager</label><input required type="checkbox" id="id-projmanProjectManager" name="role" value="projman"><label for="id-projmanProjectManager">Project Manager</label></fieldset>
+            <input  type='number' cf-questions="On average, how many hours of meetings do you have a day?" name='meetingsInDay' min=0 max=18 cf-error="I think you typoed..." />
+            <input  type='number' cf-questions="What % of those meeting hours were productive?" name='percentProductiveMeetings' min=0 max=100 cf-error='Please enter a percentage'  cf-conditional-meetingsInDay="[3-9]||[1-9][0-9]" />
+            <fieldset cf-questions="Do you struggle with some aspect at your work? (like dealing with people, distractions, speaking up, etc.)"><input required type="radio" id="id-yesyes" name="strugglewithwork" value="yes"><label for="id-yesyes">yes</label><input required type="radio" id="id-yesalittlebit" name="strugglewithwork" value="yes"><label for="id-yesalittlebit">a little bit</label><input required type="radio" id="id-not at allnotatall" name="strugglewithwork" value="not at all"><label for="id-not at allnotatall">not at all</label></fieldset>
+            <fieldset cf-questions="On a scale of 1 (bad) to 5 (excellent), how good is your relationship with your managers/management?"><input required type="radio" id="id-11" name="relationshipWithManager" value="1" cf-conditional-strugglewithwork="yes" ><label for="id-11">1</label><input required type="radio" id="id-22" name="relationshipWithManager" value="2" cf-conditional-strugglewithwork="yes" ><label for="id-22">2</label><input required type="radio" id="id-33" name="relationshipWithManager" value="3" cf-conditional-strugglewithwork="yes" ><label for="id-33">3</label><input required type="radio" id="id-44" name="relationshipWithManager" value="4" cf-conditional-strugglewithwork="yes" ><label for="id-44">4</label><input required type="radio" id="id-55" name="relationshipWithManager" value="5" cf-conditional-strugglewithwork="yes" ><label for="id-55">5</label></fieldset>
+            <fieldset cf-questions="How many times a MONTH do you have 1 on 1s with your manager?"><input required type="radio" id="id-11" name="meetingwithmanager" value="1" cf-conditional-relationshipWithManager="1||2||3" ><label for="id-11">1</label><input required type="radio" id="id-22" name="meetingwithmanager" value="2" cf-conditional-relationshipWithManager="1||2||3" ><label for="id-22">2</label><input required type="radio" id="id-33" name="meetingwithmanager" value="3" cf-conditional-relationshipWithManager="1||2||3" ><label for="id-33">3</label><input required type="radio" id="id-44" name="meetingwithmanager" value="4" cf-conditional-relationshipWithManager="1||2||3" ><label for="id-44">4</label><input required type="radio" id="id-55" name="meetingwithmanager" value="5" cf-conditional-relationshipWithManager="1||2||3" ><label for="id-55">5</label><input required type="radio" id="id-6 or more times a month6ormoretimesamonth" name="meetingwithmanager" value="6 or more times a month" cf-conditional-relationshipWithManager="1||2||3" ><label for="id-6 or more times a month6ormoretimesamonth">6 or more times a month</label></fieldset>
+            <fieldset cf-questions="How many times a YEAR do you have 1 on 1s with your <b>manager's manager</b>?"><input required type="radio" id="id-11" name="meetingwithskip" value="1" cf-conditional-relationshipWithManager="1||2||3" ><label for="id-11">1</label><input required type="radio" id="id-22" name="meetingwithskip" value="2" cf-conditional-relationshipWithManager="1||2||3" ><label for="id-22">2</label><input required type="radio" id="id-33" name="meetingwithskip" value="3" cf-conditional-relationshipWithManager="1||2||3" ><label for="id-33">3</label><input required type="radio" id="id-44" name="meetingwithskip" value="4" cf-conditional-relationshipWithManager="1||2||3" ><label for="id-44">4</label><input required type="radio" id="id-55" name="meetingwithskip" value="5" cf-conditional-relationshipWithManager="1||2||3" ><label for="id-55">5</label><input required type="radio" id="id-6 or more times a year6ormoretimesayear" name="meetingwithskip" value="6 or more times a year" cf-conditional-relationshipWithManager="1||2||3" ><label for="id-6 or more times a year6ormoretimesayear">6 or more times a year</label></fieldset>
+            <fieldset cf-questions="Are you struggling to make an impact?&&1 means not really ;  5 means that it's a problem"><input required type="radio" id="id-11" name="strugglewithimpact" value="1" cf-conditional-strugglewithwork="yes" ><label for="id-11">1</label><input required type="radio" id="id-22" name="strugglewithimpact" value="2" cf-conditional-strugglewithwork="yes" ><label for="id-22">2</label><input required type="radio" id="id-33" name="strugglewithimpact" value="3" cf-conditional-strugglewithwork="yes" ><label for="id-33">3</label><input required type="radio" id="id-44" name="strugglewithimpact" value="4" cf-conditional-strugglewithwork="yes" ><label for="id-44">4</label><input required type="radio" id="id-55" name="strugglewithimpact" value="5" cf-conditional-strugglewithwork="yes" ><label for="id-55">5</label></fieldset>
+            <input  type='text' cf-questions="Please describe what you feel has been holding you back from making an impact" name='impactHoldingBack'   cf-conditional-strugglewithimpact="[3-5]" />
+            <fieldset cf-questions="Do you relate to this: I don't feel like my work has any meaning/fulfillment&&1 means not really ;  5 means you agree"><input required type="radio" id="id-11" name="strugglewithmeaning" value="1" cf-conditional-strugglewithwork="yes" ><label for="id-11">1</label><input required type="radio" id="id-22" name="strugglewithmeaning" value="2" cf-conditional-strugglewithwork="yes" ><label for="id-22">2</label><input required type="radio" id="id-33" name="strugglewithmeaning" value="3" cf-conditional-strugglewithwork="yes" ><label for="id-33">3</label><input required type="radio" id="id-44" name="strugglewithmeaning" value="4" cf-conditional-strugglewithwork="yes" ><label for="id-44">4</label><input required type="radio" id="id-55" name="strugglewithmeaning" value="5" cf-conditional-strugglewithwork="yes" ><label for="id-55">5</label></fieldset>
+            <input  type='text' cf-questions="What do you think would make your work meaningful?" name='meaningfulwork'   cf-conditional-strugglewithmeaning="[3-5]" />
+            <input  type='text' cf-questions="In one sentence, describe what else you are struggling with." name='strugglingwith'   cf-conditional-strugglewithwork="yes" />
+            <cf-robot-message cf-questions="Ok, {firstname}, last question." ></cf-robot-message>
+            <fieldset cf-questions="If you were already participating in a training program, what skills would you like to develop?"><input required type="checkbox" id="id-CommunicationCommunication" name="skillsdev" value="Communication"><label for="id-CommunicationCommunication">Communication</label><input required type="checkbox" id="id-LeadershipLeadership" name="skillsdev" value="Leadership"><label for="id-LeadershipLeadership">Leadership</label><input required type="checkbox" id="id-People ManagementPeopleManagement" name="skillsdev" value="People Management"><label for="id-People ManagementPeopleManagement">People Management</label><input required type="checkbox" id="id-Time ManagementTimeManagement" name="skillsdev" value="Time Management"><label for="id-Time ManagementTimeManagement">Time Management</label><input required type="checkbox" id="id-OtherOther" name="skillsdev" value="Other"><label for="id-OtherOther">Other</label></fieldset>
+            <input  type='text' cf-questions="What other skills would you like to develop?" name='skillsToDevelop'   cf-conditional-skillsdev="Other" />
+            <fieldset cf-questions="Thanks for taking the time to chat with me.  Based on our conversation, I'd like to offer you a free coaching session to chat about what you've told me.&&Would you be interested?  (no obligation)"><input required type="radio" id="id-SureSure" name="askForEmail" value="Sure"><label for="id-SureSure">Sure</label><input required type="radio" id="id-NoNo" name="askForEmail" value="No"><label for="id-NoNo">No</label></fieldset>
+            <cf-robot-message cf-questions="Ok, no worries, but if you change your mind, you can just click the answer above to change it."  cf-conditional-askForEmail="No" ></cf-robot-message>
+            <input  type='text' cf-questions="Great, what's your email address?" name='email'   cf-conditional-askForEmail="Sure" />
+            <input  type='text' cf-questions="And what's your name again?" name='realname'   cf-conditional-askForEmail="Sure" />
+            <fieldset cf-questions="Thanks again for the conversation.  Here's to you finding power in your career!"><input required type="radio" id="id-Thanks, Goodbye!Thanks,Goodbye!" name="" value="Thanks, Goodbye!"><label for="id-Thanks, Goodbye!Thanks,Goodbye!">Thanks, Goodbye!</label></fieldset>
+            
+            </form>
+        <div id="cf-context" role="cf-context" cf-context class="cf"></div>
+</body>
 
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/ambrose-leung/ambrose-leung.github.io/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+</html>
