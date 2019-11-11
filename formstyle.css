@@ -1,0 +1,32 @@
+.cf {
+    opacity: 1;
+    will-change: opacity;
+    height: 600px;
+    max-height: 720px;
+    max-width: 720px;
+    margin: auto;
+    top: 30%;
+    transform: translateY(-30%);
+}
+
+@media (max-width:991px) {
+    .cf {
+        width: 70%
+    }
+}
+
+@media (max-width:767px) {
+    .cf {
+        width: 92%
+    }
+}
+
+.cf .conversational-form {
+    border: 1px solid #2f2f2f;
+    border-radius: 13px
+}
+
+        #form {
+            height: 0px;
+            overflow: hidden;
+        }
